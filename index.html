@@ -77,7 +77,13 @@
                     localStorage.removeItem("colVisableType");
                 }
             }
-
+            if (localStorage.getItem("sheetName") != null) {
+                if (localStorage.getItem("sheetName") != sheetName) {
+                    localStorage.removeItem("seacrchTitle");
+                    localStorage.removeItem("colSort");
+                    localStorage.removeItem("colVisableType");
+                }
+            }
             localStorage.setItem("sheetId", sheetId);
             localStorage.setItem("sheetName", sheetName);
             localStorage.setItem("key", apiKey);
