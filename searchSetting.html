@@ -154,7 +154,7 @@
         }
 
         for (var i = 0; i < indexArray.length; i++) {
-            changeRow(indexArray[i], i, i, visableTypeArr[i]);
+            changeRow(indexArray[i], i, visableTypeArr[indexArray[i]]);
 
         }
         $('#settingTable').bootstrapTable('hideColumn', 'id');
@@ -164,7 +164,7 @@
     function toggle(index, e) {
         var type = document.getElementById('container' + index).classList.toggle('is-active');
         var containerIndex = getContainerElementIndex(index);
-        sleep(300).then(() => { changeRow(index, index, containerIndex, type); });
+        sleep(300).then(() => { changeRow(index, containerIndex, type); });
     }
 
     function getContainerElementIndex(index) {
@@ -184,9 +184,9 @@
 
     }
 
-    function changeRow(index, visableIndex, containerIndex, type) {
+    function changeRow(index, containerIndex, type) {
 
-        visableTypeArr[visableIndex] = String(type);
+        visableTypeArr[index] = String(type);
 
         if (type == "true") {
             $('#settingTable').bootstrapTable('updateRow', {
