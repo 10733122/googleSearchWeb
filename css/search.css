@@ -1,0 +1,18 @@
+html,
+body {
+    height: 100%;
+}
+
+.form-search {
+    max-width: 330px;
+    padding: 1rem;
+    height: 95%;
+}
+
+.form-search .form-floating {
+    margin-bottom: 10px;
+}
+
+.form-search .form-control {
+    width: 170px;
+}

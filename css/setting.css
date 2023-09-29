@@ -1,0 +1,30 @@
+.form-setting {
+    max-width: 330px;
+    padding: 1rem;
+}
+
+.form-setting .form-floating:focus-within {
+    z-index: 2;
+}
+
+.form-setting .form-floating label {
+    font-size: 1.5rem;
+}
+
+.form-setting .form-floating .btn {
+    font-size: 1.8rem;
+}
+
+.form-setting .form-floating .form-select {
+    font-size: 2rem;
+    height: 5rem;
+}
+
+body table {
+    font-size: 2rem;
+
+}
+
+.form-setting .form-floating {
+    margin-bottom: 10px;
+}

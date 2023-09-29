@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<title>google excel search - 查詢</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+		crossorigin="anonymous">
+	<link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
+
+	<!-- Core theme CSS (includes Bootstrap)-->
+	<link href="css/styles.css" rel="stylesheet" />
+	<link href="css/search.css" rel="stylesheet">
+
+</head>
+
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+
+	<main class="form-search w-100 m-auto">
+		<form>
+			<div id="toolbar">
+				<a href="index.html" class="btn btn-primary py-2 " role="button">離線</a>
+				<a href="searchSetting.html" class="btn btn-primary py-2" role="button">設定</a>
+			</div>
+			<div class="form-floating">
+				<table id="searchTable">
+					<thead>
+						<tr>
+							<th data-field="searchData">主查詢資料</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+
+				</table>
+			</div>
+
+
+		</form>
+		<div id="result" style="height:300px;overflow:auto;background:#EEEEEE;"></div>
+
+
+	</main>
+
+
+
+
+
+</body>
+
+</html>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+<script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.16.0/locale/bootstrap-table-zh-TW.min.js"></script>
+
+<script>
+
+	// window.addEventListener('touchstart', function (event) {
+	// 	// some logic
+	// 	event.preventDefault(); // <-- that should not be used in passive
+	// 	// some other magic
+	// });
+
+	var sheetId = (localStorage.getItem("sheetId"));
+	var sheetName = (localStorage.getItem("sheetName"));
+	var apiKey = (localStorage.getItem("key"));
+
+	var spreadsheet_id = sheetId, // 填入試算表 ID
+		tab_name = sheetName, // 填入工作表名稱
+		api_key = apiKey, // 填入 API 金鑰
+		url = "https://sheets.googleapis.com/v4/spreadsheets/" + spreadsheet_id + "/values/" + tab_name + "?key=" + api_key;
+
+	var visableTypeArr = new Array();
+	// visableTypeArr = JSON.parse(localStorage.getItem("visableTypeArr")).Array();
+
+
+	var searchTitleValue;
+	var searchValues = "";
+
+	$(document).ready(function () {
+		var valueList = [];
+		var uniqueArr;
+		$.getJSON(url, function (json) {
+			searchValues = json.values;
+
+		}).success(function () {
+
+			searchTitleValue = localStorage.getItem("seacrchTitle");
+
+
+			for (let i = 1; i < searchValues.length; i++) {
+
+				searchItem = searchValues[i][searchTitleValue];
+				if (searchItem == undefined) {
+					searchItem = "";
+				}
+				valueList.push(searchItem);
+
+			}
+
+
+			uniqueArr = [...new Set(valueList)];
+
+
+			for (let i = 0; i < uniqueArr.length; i++) {
+				$('#searchTable').bootstrapTable('append', { 'searchData': uniqueArr[i] });
+
+			}
+
+		}).error(function () { alert("連線失敗"); window.location.href = "index.html"; });
+		$("#searchTable").bootstrapTable({
+
+			striped: true,
+
+			search: true,
+			height: 350,
+			toolbar: '#toolbar',
+			showHeader: false,
+			onClickRow: function (row, element) {
+
+				var resultArr = [];
+
+				searchValues.filter((word) => word[searchTitleValue] == uniqueArr[element.index()]);
+
+				for (var i = 0; i < searchValues.length; i++) {
+
+					var colSortArr = JSON.parse(localStorage.getItem("colSort"));
+					var visableArr = JSON.parse(localStorage.getItem("colVisableType"));
+					if (searchValues[i][searchTitleValue] == uniqueArr[element.index()]) {
+						var sortResultArr = [];
+
+						for (var j = 0; j < colSortArr.length; j++) {
+							if (visableArr[j] == "true") {
+
+								if (searchValues[i][colSortArr[j]] == undefined) {
+									searchValues[i][colSortArr[j]] = "";
+								}
+
+								sortResultArr.push(searchValues[0][colSortArr[j]] + "：" + searchValues[i][colSortArr[j]] + "\n");
+							}
+						}
+						//alert(searchValues[i]);
+
+
+						resultArr.push(sortResultArr.join(" "));
+
+					}
+
+				}
+				var result = resultArr.join("\n");
+
+
+				document.getElementById("result").innerText = "查詢結果\n" + result;
+
+
+			}
+		});
+
+	});
+
+
+
+
+	function search() {
+
+		// do 取得欄位排序
+		var indexArray = {};
+
+		for (let i = 0; i < $('#searchTable').bootstrapTable('getData').length; i++) {
+			var index = $('#searchTable').bootstrapTable('getData')[i].id;
+			indexArray.push(index);
+		}
+		localStorage.setItem("colSort", JSON.stringify(indexArray));
+		//do 取得開關
+
+		localStorage.setItem("colVisableType", JSON.stringify(visableTypeArr));
+		window.location.href = "searchData.html";
+	}
+</script>

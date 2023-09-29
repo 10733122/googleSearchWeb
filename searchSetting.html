@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>google excel search - 設定</title>
+    <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.12.2/bootstrap-table.css" rel="stylesheet">
+
+    <link href="https://cdn.bootcss.com/bootstrap-table/1.12.2/extensions/reorder-rows/bootstrap-table-reorder-rows.css"
+        rel="stylesheet">
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/setting.css" rel="stylesheet">
+
+</head>
+
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+
+    <main class="form-setting w-100 m-auto">
+        <form>
+
+            <div class="form-floating">
+                <select class="form-select form-select-lg mb-3" id="searchTitle"
+                    aria-label=".form-select-lg example"></select>
+                <label for="searchTitle">主查詢欄位</label>
+            </div>
+            <div class="form-floating">
+                <table id="settingTable">
+                    <thead>
+                        <tr>
+                            <th data-field="id"></th>
+                            <th data-field="colName">詳細資料欄位</th>
+                            <th data-field="visableType">隱藏/顯示</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+
+                </table>
+            </div>
+            <div class="form-floating">
+                <a href="index.html" class="btn btn-primary py-2" role="button">取消連線</a>
+                <button class="btn btn-primary  py-2" type="button" onclick="defaultSetting()">恢復預設</button>
+                <button class="btn btn-primary  py-2" type="button" onclick="search()">開始查詢</button>
+            </div>
+
+
+            <!-- <div class="form-check text-start my-3">
+                <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Remember me
+                </label>
+            </div> -->
+
+        </form>
+        <div id="test">
+
+        </div>
+    </main>
+
+
+
+
+
+</body>
+
+</html>
+<script src="https://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+
+<script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script src="https://cdn.bootcss.com/bootstrap-table/1.12.2/bootstrap-table.js"></script>
+
+<script src="https://cdn.bootcss.com/bootstrap-table/1.12.2/locale/bootstrap-table-zh-CN.js"></script>
+
+<script src="https://cdn.bootcss.com/TableDnD/1.0.3/jquery.tablednd.min.js"></script>
+
+<script
+    src="https://cdn.bootcss.com/bootstrap-table/1.12.2/extensions/reorder-rows/bootstrap-table-reorder-rows.js"></script>
+
+<script>
+
+    window.addEventListener('touchstart', function (event) {
+        // some logic
+        event.preventDefault(); // <-- that should not be used in passive
+        // some other magic
+    });
+
+    var sheetId = (localStorage.getItem("sheetId"));
+    var sheetName = (localStorage.getItem("sheetName"));
+    var apiKey = (localStorage.getItem("key"));
+
+    var spreadsheet_id = sheetId, // 填入試算表 ID
+        tab_name = sheetName, // 填入工作表名稱
+        api_key = apiKey, // 填入 API 金鑰
+        url = "https://sheets.googleapis.com/v4/spreadsheets/" + spreadsheet_id + "/values/" + tab_name + "?key=" + api_key;
+
+    var visableTypeArr = new Array();
+    var indexArray = new Array();
+    // visableTypeArr = JSON.parse(localStorage.getItem("visableTypeArr")).Array();
+
+
+
+    var titleValue = "";
+
+    $(document).ready(function () {
+
+        $("#settingTable").bootstrapTable({
+
+            reorderableRows: true,
+
+            striped: true,
+
+            search: false,
+
+            useRowAttrFunc: true,
+
+
+        });
+
+    });
+
+    $.getJSON(url, function (json) {
+        titleValue = json.values[0];
+
+    }).success(function () {
+
+        var selectList = document.getElementById("searchTitle");
+
+
+
+        if (localStorage.getItem("colVisableType") != null) {
+            visableTypeArr = JSON.parse(localStorage.getItem("colVisableType"));
+            indexArray = JSON.parse(localStorage.getItem("colSort"));
+        }
+        for (var i = 0; i < titleValue.length; i++) {
+            selectList.options[i] = new Option(titleValue[i], i);
+            if (visableTypeArr.length == titleValue.length) {
+                if (visableTypeArr[i] != "false") {
+                    $('#settingTable').bootstrapTable('append', { 'id': i, 'colName': titleValue[i], 'visableType': '<div id="container' + i + '" class="container is-active"><div class="circle" onclick="toggle(' + i + ')"></div></div>' });
+                }
+                else {
+                    $('#settingTable').bootstrapTable('append', { 'id': i, 'colName': titleValue[i], 'visableType': '<div id="container' + i + '" class="container"><div class="circle" onclick="toggle(' + i + ')"></div></div>' });
+                }
+
+            }
+            else {
+                visableTypeArr.push("true");
+                $('#settingTable').bootstrapTable('append', { 'id': i, 'colName': titleValue[i], 'visableType': '<div id="container' + i + '" class="container is-active"><div class="circle" onclick="toggle(' + i + ')"></div></div>' });
+            }
+
+        }
+
+        for (var i = 0; i < indexArray.length; i++) {
+            changeRow(indexArray[i], i, i, visableTypeArr[i]);
+
+        }
+        $('#settingTable').bootstrapTable('hideColumn', 'id');
+
+    }).error(function () { alert("連線失敗"); window.location.href = "index.html"; });
+
+    function toggle(index, e) {
+        var type = document.getElementById('container' + index).classList.toggle('is-active');
+        var containerIndex = getContainerElementIndex(index);
+        sleep(300).then(() => { changeRow(index, index, containerIndex, type); });
+    }
+
+    function getContainerElementIndex(index) {
+        document.getElementById('container' + index).classList.toggle('change');
+        var nodes = Array.prototype.slice.call(document.getElementsByClassName('container'));
+        var liRef = document.getElementsByClassName('change')[0];
+        document.getElementById('container' + index).classList.toggle('change');
+        return (nodes.indexOf(liRef));
+    }
+
+    function defaultSetting() {
+        localStorage.removeItem("seacrchTitle");
+        localStorage.removeItem("colSort");
+        localStorage.removeItem("colVisableType");
+
+        window.location.href = "searchSetting.html";
+
+    }
+
+    function changeRow(index, visableIndex, containerIndex, type) {
+
+        visableTypeArr[visableIndex] = String(type);
+
+        if (type == "true") {
+            $('#settingTable').bootstrapTable('updateRow', {
+                index: containerIndex,
+                row: {
+                    'id': index, 'colName': titleValue[index], 'visableType': '<div id="container' + index + '" class="container is-active"><div class="circle" onclick="toggle(' + index + ')"></div></div>',
+                }
+            });
+        }
+        else {
+            $('#settingTable').bootstrapTable('updateRow', {
+                index: containerIndex,
+                row: {
+                    'id': index, 'colName': titleValue[index], 'visableType': '<div id="container' + index + '" class="container"><div class="circle" onclick="toggle(' + index + ')"></div></div>'
+                }
+            });
+        }
+    }
+
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function search() {
+
+        //do 取selected值
+        var searchTitleValue = document.getElementById("searchTitle").value;
+        localStorage.setItem("seacrchTitle", searchTitleValue);
+
+        // do 取得欄位排序
+
+        indexArray = new Array();
+        for (var i = 0; i < titleValue.length; i++) {
+
+            var index = $('#settingTable').bootstrapTable('getData')[i].id;
+
+            indexArray.push(index);
+        }
+        localStorage.setItem("colSort", JSON.stringify(indexArray));
+        //do 取得開關
+
+        localStorage.setItem("colVisableType", JSON.stringify(visableTypeArr));
+        window.location.href = "searchData.html";
+    }
+
+
+</script>
+
+<style>
+    .container {
+        box-sizing: border-box;
+        width: 70px;
+        height: 40px;
+        padding: 2px;
+        border-radius: 20px;
+        background-color: #6b6b6edb;
+        border: 2px solid #6b6b6edb;
+    }
+
+    .circle {
+        position: relative;
+        width: 32px;
+        height: 32px;
+        background-color: white;
+        border-radius: 50%;
+        margin-left: 0;
+        cursor: pointer;
+    }
+
+    .is-active.container {
+        background-color: #30DE58;
+        border-color: #30DE58;
+    }
+
+    .is-active .circle {
+        background-color: white;
+        margin-left: calc(100% - 32px);
+    }
+
+    .container,
+    .circle {
+        transition: .3s;
+    }
+
+    .is-active.container,
+    .is-active .circle {
+        transition: all .3s;
+    }
+</style>

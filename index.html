@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>google excel search - 登入</title>
+
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/login.css" rel="stylesheet">
+
+</head>
+
+<body class="d-flex align-items-center py-4 bg-body-tertiary">
+
+    <main class="form-signin w-100 m-auto">
+        <form>
+            <img class="mb-4" src="assets/icon.jpg" alt="" width="250" height="250" style="margin-left: 10%;">
+
+            <div class="form-floating">
+                <input type="password" class="form-control" id="apiKey" style="margin-bottom: 2%;" placeholder="API憑證">
+                <label for="apipassword">API憑證</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="sheetId" style="margin-bottom: 2%;" placeholder="試算表ID">
+                <label for="sheetId">試算表ID</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="sheetName" style="margin-bottom: 2%;" placeholder="工作表名稱">
+                <label for="sheetId">工作表名稱</label>
+            </div>
+
+            <!-- <div class="form-check text-start my-3">
+                <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Remember me
+                </label>
+            </div> -->
+
+            <button class="btn btn-primary w-100 py-2" type="button" onclick="login()">連線</button>
+        </form>
+        <div id="test">
+
+        </div>
+    </main>
+    <script type="text/javascript" src="js/encode.js"></script>
+
+    <script src='//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js'></script>
+    <script>
+
+        window.onload = function load() {
+            if (localStorage.getItem("sheetId") != "") {
+                var sheetId = (localStorage.getItem("sheetId"));
+                var sheetName = (localStorage.getItem("sheetName"));
+                var apiKey = (localStorage.getItem("key"));
+                document.getElementById("sheetId").value = sheetId;
+                document.getElementById("sheetName").value = sheetName;
+                document.getElementById("apiKey").value = apiKey;
+            }
+
+        }
+
+        function login() {
+
+            var sheetId = (document.getElementById("sheetId").value);
+            var sheetName = (document.getElementById("sheetName").value);
+            var apiKey = (document.getElementById("apiKey").value);
+
+            if (localStorage.getItem("sheetId") != null) {
+                if (localStorage.getItem("sheetId") != sheetId) {
+                    localStorage.removeItem("seacrchTitle");
+                    localStorage.removeItem("colSort");
+                    localStorage.removeItem("colVisableType");
+                }
+            }
+
+            localStorage.setItem("sheetId", sheetId);
+            localStorage.setItem("sheetName", sheetName);
+            localStorage.setItem("key", apiKey);
+
+            var spreadsheet_id = sheetId, // 填入試算表 ID
+                tab_name = sheetName, // 填入工作表名稱
+                api_key = apiKey, // 填入 API 金鑰
+                url = "https://sheets.googleapis.com/v4/spreadsheets/" + spreadsheet_id + "/values/" + tab_name + "?key=" + api_key;
+
+
+            $.getJSON(url, function (json) {
+                var values = json.values;
+
+            }).success(function () { window.location.href = "searchSetting.html"; })
+                .error(function () { alert("連線失敗"); });
+
+        }
+
+
+
+    </script>
+</body>
+
+</html>
