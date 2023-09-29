@@ -60,12 +60,6 @@
 
 <script>
 
-	// window.addEventListener('touchstart', function (event) {
-	// 	// some logic
-	// 	event.preventDefault(); // <-- that should not be used in passive
-	// 	// some other magic
-	// });
-
 	var sheetId = (localStorage.getItem("sheetId"));
 	var sheetName = (localStorage.getItem("sheetName"));
 	var apiKey = (localStorage.getItem("key"));
@@ -76,8 +70,6 @@
 		url = "https://sheets.googleapis.com/v4/spreadsheets/" + spreadsheet_id + "/values/" + tab_name + "?key=" + api_key;
 
 	var visableTypeArr = new Array();
-	// visableTypeArr = JSON.parse(localStorage.getItem("visableTypeArr")).Array();
-
 
 	var searchTitleValue;
 	var searchValues = "";
@@ -93,7 +85,7 @@
 			searchTitleValue = localStorage.getItem("seacrchTitle");
 
 
-			for (let i = 1; i < searchValues.length; i++) {
+			for (var i = 1; i < searchValues.length; i++) {
 
 				searchItem = searchValues[i][searchTitleValue];
 				if (searchItem == undefined) {
@@ -107,7 +99,7 @@
 			uniqueArr = [...new Set(valueList)];
 
 
-			for (let i = 0; i < uniqueArr.length; i++) {
+			for (var i = 0; i < uniqueArr.length; i++) {
 				$('#searchTable').bootstrapTable('append', { 'searchData': uniqueArr[i] });
 
 			}
@@ -135,7 +127,7 @@
 						var sortResultArr = [];
 
 						for (var j = 0; j < colSortArr.length; j++) {
-							if (visableArr[j] == "true") {
+							if (visableArr[colSortArr[j]] == "true") {
 
 								if (searchValues[i][colSortArr[j]] == undefined) {
 									searchValues[i][colSortArr[j]] = "";
@@ -144,8 +136,6 @@
 								sortResultArr.push(searchValues[0][colSortArr[j]] + "：" + searchValues[i][colSortArr[j]] + "\n");
 							}
 						}
-						//alert(searchValues[i]);
-
 
 						resultArr.push(sortResultArr.join(" "));
 
