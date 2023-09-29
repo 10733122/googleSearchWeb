@@ -117,13 +117,11 @@
 
 				var resultArr = [];
 
-				searchValues.filter((word) => word[searchTitleValue] == uniqueArr[element.index()]);
-
 				for (var i = 0; i < searchValues.length; i++) {
 
 					var colSortArr = JSON.parse(localStorage.getItem("colSort"));
 					var visableArr = JSON.parse(localStorage.getItem("colVisableType"));
-					if (searchValues[i][searchTitleValue] == uniqueArr[element.index()]) {
+					if (searchValues[i][searchTitleValue] == row.searchData) {
 						var sortResultArr = [];
 
 						for (var j = 0; j < colSortArr.length; j++) {
