@@ -134,6 +134,8 @@
         }
         for (var i = 0; i < titleValue.length; i++) {
             selectList.options[i] = new Option(titleValue[i], i);
+
+            
             if (visableTypeArr.length == titleValue.length) {
                 if (visableTypeArr[i] != "false") {
                     $('#settingTable').bootstrapTable('append', { 'id': i, 'colName': titleValue[i], 'visableType': '<div id="container' + i + '" class="container is-active"><div class="circle" onclick="toggle(' + i + ')"></div></div>' });
@@ -149,6 +151,11 @@
             }
 
         }
+
+            if(localStorage.getItem("seacrchTitle")!=null)
+            {
+                selectList.options[localStorage.getItem("seacrchTitle")].selected = true;
+            }
 
         for (var i = 0; i < indexArray.length; i++) {
             changeRow(indexArray[i], i, visableTypeArr[indexArray[i]]);
