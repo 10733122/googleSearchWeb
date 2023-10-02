@@ -87,7 +87,7 @@
 					searchItem = "";
 				}
 				
-				if(valueList.indexOf(searchItem)<=0)
+				if(valueList.indexOf(searchItem)<0)
 				{
 					valueList.push(searchItem);
 					$('#searchTable').bootstrapTable('append', { 'searchData': searchItem });
