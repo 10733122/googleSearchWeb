@@ -69,9 +69,9 @@
 	var searchTitleValue;
 	var searchValues = "";
 
-	var lastValue;
+	var valueList = [];
 	$(document).ready(function () {
-		var valueList = [];
+		
 		var uniqueArr;
 		$.getJSON(url, function (json) {
 			searchValues = json.values;
@@ -79,7 +79,6 @@
 		}).success(function () {
 
 			searchTitleValue = localStorage.getItem("seacrchTitle");
-
 
 			for (var i = 1; i < searchValues.length; i++) {
 
@@ -90,18 +89,17 @@
 				
 				if(valueList.indexOf(searchItem)<0)
 				{
-					var value = {searchData:searchItem};
+					var value = {"searchData":searchItem};
 					valueList.push(value);
 				}
 
 			}
-			lastValue = JSON.stringify(valueList);
 
 		}).error(function () { alert("連線失敗"); window.location.href = "index.html"; });
 		$("#searchTable").bootstrapTable({
 
 			striped: true,
-			data:lastValue,
+			data:valueList,
 			search: true,
 			height: 350,
 			toolbar: '#toolbar',
