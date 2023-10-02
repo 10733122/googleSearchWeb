@@ -68,9 +68,10 @@
 
 	var searchTitleValue;
 	var searchValues = "";
-var valueList = [];
+
+	var lastValue;
 	$(document).ready(function () {
-		
+		var valueList = [];
 		var uniqueArr;
 		$.getJSON(url, function (json) {
 			searchValues = json.values;
@@ -94,12 +95,13 @@ var valueList = [];
 				}
 
 			}
+			lastValue = JSON.stringify(valueList);
 
 		}).error(function () { alert("連線失敗"); window.location.href = "index.html"; });
 		$("#searchTable").bootstrapTable({
 
 			striped: true,
-			data:valueList,
+			data:lastValue,
 			search: true,
 			height: 350,
 			toolbar: '#toolbar',
