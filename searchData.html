@@ -71,7 +71,7 @@
 
 	var valueList = [];
 	$(document).ready(function () {
-		
+
 		var uniqueArr;
 		$.getJSON(url, function (json) {
 			searchValues = json.values;
@@ -86,62 +86,63 @@
 				if (searchItem == undefined) {
 					searchItem = "";
 				}
-				
-				if(valueList.indexOf(searchItem)<0)
-				{
-					var value = {"searchData":searchItem};
+
+				if (valueList.indexOf(searchItem) < 0) {
+					var value = { "searchData": searchItem };
 					valueList.push(value);
-					$('#searchTable').bootstrapTable('append', { 'searchData': searchItem });
 				}
 
 			}
+			$("#searchTable").bootstrapTable('showLoading');
+			$("#searchTable").bootstrapTable({
 
-		}).error(function () { alert("連線失敗"); window.location.href = "index.html"; });
-		$("#searchTable").bootstrapTable({
+				striped: true,
+				data: valueList,
+				search: true,
+				height: 350,
 
-			striped: true,
-			data:valueList,
-			search: true,
-			height: 350,
-			
-			showHeader: false,
-			
-			onClickRow: function (row, element) {
+				showHeader: false,
 
-				var resultArr = [];
+				onClickRow: function (row, element) {
 
-				for (var i = 0; i < searchValues.length; i++) {
+					var resultArr = [];
 
-					var colSortArr = JSON.parse(localStorage.getItem("colSort"));
-					var visableArr = JSON.parse(localStorage.getItem("colVisableType"));
-					if (searchValues[i][searchTitleValue] == row.searchData) {
-						var sortResultArr = [];
+					for (var i = 0; i < searchValues.length; i++) {
 
-						for (var j = 0; j < colSortArr.length; j++) {
-							if (visableArr[colSortArr[j]] == "true") {
+						var colSortArr = JSON.parse(localStorage.getItem("colSort"));
+						var visableArr = JSON.parse(localStorage.getItem("colVisableType"));
+						if (searchValues[i][searchTitleValue] == row.searchData) {
+							var sortResultArr = [];
 
-								if (searchValues[i][colSortArr[j]] == undefined) {
-									searchValues[i][colSortArr[j]] = "";
+							for (var j = 0; j < colSortArr.length; j++) {
+								if (visableArr[colSortArr[j]] == "true") {
+
+									if (searchValues[i][colSortArr[j]] == undefined) {
+										searchValues[i][colSortArr[j]] = "";
+									}
+
+									sortResultArr.push(searchValues[0][colSortArr[j]] + "：" + searchValues[i][colSortArr[j]] + "\n");
 								}
-
-								sortResultArr.push(searchValues[0][colSortArr[j]] + "：" + searchValues[i][colSortArr[j]] + "\n");
 							}
+
+							resultArr.push(sortResultArr.join(" "));
+
 						}
 
-						resultArr.push(sortResultArr.join(" "));
-
 					}
+					var result = resultArr.join("\n");
+
+
+					document.getElementById("result").innerText = "查詢結果\n" + result;
+
 
 				}
-				var result = resultArr.join("\n");
+			});
+			// JSON.stringify(valueList);
+			console.log(valueList);
+		}).error(function () { alert("連線失敗"); window.location.href = "index.html"; });
 
-
-				document.getElementById("result").innerText = "查詢結果\n" + result;
-
-
-			}
-		});
 
 	});
-	$("#searchTable").bootstrapTable('showLoading');
+
 </script>
