@@ -68,9 +68,9 @@
 
 	var searchTitleValue;
 	var searchValues = "";
-
+var valueList = [];
 	$(document).ready(function () {
-		var valueList = [];
+		
 		var uniqueArr;
 		$.getJSON(url, function (json) {
 			searchValues = json.values;
