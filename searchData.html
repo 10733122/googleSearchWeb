@@ -42,12 +42,7 @@
 		</form>
 		<div id="result" style="height:300px;overflow:auto;background:#EEEEEE;"></div>
 
-
 	</main>
-
-
-
-
 
 </body>
 
@@ -91,16 +86,12 @@
 				if (searchItem == undefined) {
 					searchItem = "";
 				}
-				valueList.push(searchItem);
-
-			}
-
-
-			uniqueArr = [...new Set(valueList)];
-
-
-			for (var i = 0; i < uniqueArr.length; i++) {
-				$('#searchTable').bootstrapTable('append', { 'searchData': uniqueArr[i] });
+				
+				if(valueList.indexOf(searchItem)<=0)
+				{
+					valueList.push(searchItem);
+					$('#searchTable').bootstrapTable('append', { 'searchData': searchItem });
+				}
 
 			}
 
@@ -151,22 +142,4 @@
 
 	});
 
-
-
-
-	function search() {
-
-		// do 取得欄位排序
-		var indexArray = {};
-
-		for (let i = 0; i < $('#searchTable').bootstrapTable('getData').length; i++) {
-			var index = $('#searchTable').bootstrapTable('getData')[i].id;
-			indexArray.push(index);
-		}
-		localStorage.setItem("colSort", JSON.stringify(indexArray));
-		//do 取得開關
-
-		localStorage.setItem("colVisableType", JSON.stringify(visableTypeArr));
-		window.location.href = "searchData.html";
-	}
 </script>
