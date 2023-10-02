@@ -87,10 +87,10 @@
 					searchItem = "";
 				}
 				
-				if(valueList.indexOf(searchItem)<0)
+				if(valueList.indexOf(searchItem)<=0)
 				{
-					valueList.push(searchItem);
-					$('#searchTable').bootstrapTable('append', { 'searchData': searchItem });
+					var value = {searchData:searchItem};
+					valueList.push(value);
 				}
 
 			}
@@ -99,11 +99,12 @@
 		$("#searchTable").bootstrapTable({
 
 			striped: true,
-
+			data:valueList,
 			search: true,
 			height: 350,
 			toolbar: '#toolbar',
 			showHeader: false,
+			
 			onClickRow: function (row, element) {
 
 				var resultArr = [];
@@ -141,5 +142,5 @@
 		});
 
 	});
-$("#searchTable").bootstrapTable('showLoading');
+	$("#searchTable").bootstrapTable('showLoading');
 </script>
