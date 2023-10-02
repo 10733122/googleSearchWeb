@@ -126,9 +126,14 @@
         titleValue = json.values[0];
 
     }).success(function () {
-
-        var selectList = document.getElementById("searchTitle");
-
+        var selectList;
+        if(localStorage.getItem("seacrchTitle") != null)
+        {
+            selectList =localStorage.getItem("seacrchTitle");
+        }
+        else{
+           selectList  = document.getElementById("searchTitle");
+        }
 
 
         if (localStorage.getItem("colVisableType") != null) {
