@@ -68,7 +68,7 @@
 
 	var searchTitleValue;
 	var searchValues = "";
-
+	var chkList = [];
 	var valueList = [];
 	$(document).ready(function () {
 
@@ -86,10 +86,11 @@
 				if (searchItem == undefined) {
 					searchItem = "";
 				}
-				var value = { "searchData": searchItem };
-				if (valueList.indexOf(value) < 0) {
-					
+				
+				if (chkList.indexOf(searchItem) < 0) {
+					var value = { "searchData": searchItem };
 					valueList.push(value);
+					chkList.push(searchItem);
 				}
 
 			}
