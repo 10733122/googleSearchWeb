@@ -86,9 +86,9 @@
 				if (searchItem == undefined) {
 					searchItem = "";
 				}
-
-				if (valueList.indexOf(searchItem) < 0) {
-					var value = { "searchData": searchItem };
+				var value = { "searchData": searchItem };
+				if (valueList.indexOf(value) < 0) {
+					
 					valueList.push(value);
 				}
 
