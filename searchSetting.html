@@ -47,6 +47,7 @@
             <div class="form-floating">
                 <a href="index.html" class="btn btn-primary py-2" role="button">取消連線</a>
                 <button class="btn btn-primary  py-2" type="button" onclick="defaultSetting()">恢復預設</button>
+                <button class="btn btn-primary  py-2" type="button" onclick="SaveSettingValue()">儲存設定</button>
                 <button class="btn btn-primary  py-2" type="button" onclick="search()">開始查詢</button>
             </div>
 
@@ -99,12 +100,12 @@
         url = "https://sheets.googleapis.com/v4/spreadsheets/" + spreadsheet_id + "/values/" + tab_name + "?key=" + api_key;
 
     var visableTypeArr = new Array();
-    var indexArray = new Array();
-    // visableTypeArr = JSON.parse(localStorage.getItem("visableTypeArr")).Array();
-
-
-
+    var indexArray = new Array();    
     var titleValue = "";
+
+    var defaultVisableType = new Array();
+    var defaultIndexArray = new Array();    
+    var defaultTitleValue = "0";
 
     $(document).ready(function () {
 
@@ -127,7 +128,7 @@
         titleValue = json.values[0];
 
     }).success(function () {
-        var selectList = document.getElementById("searchTitle");;
+        var selectList = document.getElementById("searchTitle");
 
         if (localStorage.getItem("colVisableType") != null) {
             visableTypeArr = JSON.parse(localStorage.getItem("colVisableType"));
@@ -135,8 +136,8 @@
         }
         for (var i = 0; i < titleValue.length; i++) {
             selectList.options[i] = new Option(titleValue[i], i);
-
-            
+            defaultIndexArray.push(i);
+            defaultVisableType.push("true");
             if (visableTypeArr.length == titleValue.length) {
                 if (visableTypeArr[i] != "false") {
                     $('#settingTable').bootstrapTable('append', { 'id': i, 'colName': titleValue[i], 'visableType': '<div id="container' + i + '" class="container is-active"><div class="circle" onclick="toggle(' + i + ')"></div></div>' });
@@ -147,16 +148,17 @@
 
             }
             else {
-                visableTypeArr.push("true");
-                $('#settingTable').bootstrapTable('append', { 'id': i, 'colName': titleValue[i], 'visableType': '<div id="container' + i + '" class="container is-active"><div class="circle" onclick="toggle(' + i + ')"></div></div>' });
+                $('#settingTable').bootstrapTable('append', { 'id': i, 'colName': titleValue[i], 'visableType': '<div id="container' + i + '" class="container is-active"><div class="circle" onclick="toggle(' + i + ')"></div></div>' });            
+                
             }
-
+            
         }
 
             if(localStorage.getItem("seacrchTitle")!=null)
             {
-                selectList.options[localStorage.getItem("seacrchTitle")].selected = true;
+                selectList.options[localStorage.getItem("seacrchTitle")].selected = true;               
             }
+
 
         for (var i = 0; i < indexArray.length; i++) {
             changeRow(indexArray[i], i, visableTypeArr[indexArray[i]]);
@@ -217,8 +219,7 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    function search() {
-
+    function SaveSettingValue() {
         //do 取selected值
         var searchTitleValue = document.getElementById("searchTitle").value;
         localStorage.setItem("seacrchTitle", searchTitleValue);
@@ -236,6 +237,16 @@
         //do 取得開關
 
         localStorage.setItem("colVisableType", JSON.stringify(visableTypeArr));
+
+    }
+
+    function search() {
+        if(localStorage.getItem(seacrchTitle)==null)
+        {
+            localStorage.setItem("seacrchTitle", defaultTitleValue);
+            localStorage.setItem("colSort", JSON.stringify(defaultIndexArray));
+            localStorage.setItem("colVisableType", JSON.stringify(defaultVisableType));
+        }
         window.location.href = "searchData.html";
     }
 
